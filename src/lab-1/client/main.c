@@ -5,29 +5,30 @@
 #include "bootleg_stdio.h"
 
 inline static bool is_vowel(char c) {
-	return c == 'a' || c == 'e' || c == 'o' || c == 'i' || c == 'u' || c == 'A' || c == 'E' || c == 'O' || c == 'I' ||
-	       c == 'U';
+	bool lowercase = c == 'a' || c == 'e' || c == 'o' || c == 'i' || c == 'u';
+	bool uppercase = c == 'A' || c == 'E' || c == 'O' || c == 'I' || c == 'U';
+	return lowercase || uppercase;
 }
 
-bool remove_vowels(const char* in, size_t length, char** out, size_t* newLength) {
-	if (in == NULL || length == 0 || out == NULL) return false;
-
-	*out = malloc((length + 1) * sizeof(char));
-	if (*out == NULL) return false;
-
-	char* ptr = (char*)in;
-	size_t j = 0;
-
-	while (*ptr != '\0') {
-		if (!is_vowel(*ptr)) {
-			(*out)[j] = *ptr;
-			++j;
-		}
-		++ptr;
+bool remove_vowels(const char* in, size_t inLength, char** out, size_t* outLength) {
+	if (in == NULL || inLength == 0 || out == NULL || outLength == NULL) {
+		return false;
 	}
 
+	*out = malloc((inLength + 1) * sizeof(char));
+	if (*out == NULL) return false;
+
+	// Copy chars from |in|, excluding vowels.
+	size_t j = 0;
+	for (char* ptr = (char*)in; *ptr != '\0'; ++ptr) {
+		if (!is_vowel(*ptr)) {
+			(*out)[j++] = *ptr;
+		}
+	}
+
+	// Null-terminate the string.
 	(*out)[j] = '\0';
-	*newLength = j;
+	*outLength = j;
 
 	return true;
 }
@@ -43,7 +44,7 @@ int main(int argc, char** argv) {
 			blg_perrorf("[child] can't read from stdin\n");
 		}
 
-		// Exit condition
+		// Exit condition.
 		if (*buffer == '\n') {
 			free(buffer);
 			free(modified);

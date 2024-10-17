@@ -59,6 +59,13 @@ int main(int argc, char** argv) {
 		}
 
 		if (child == 0) {
+			for (int j = 0; j != nChildren; ++j) {
+				if (i != j) {
+					close(pipes[j][STDIN_FILENO]);
+					close(pipes[j][STDOUT_FILENO]);
+				}
+			}
+
 			if (dup2(pipes[i][STDIN_FILENO], STDIN_FILENO) == -1) {
 				blg_perrorf("can't redirect child's stdin to pipe\n");
 			}
@@ -70,6 +77,8 @@ int main(int argc, char** argv) {
 			if (execl(/* path */ client, /* argv[0] */ client, (char*)NULL) == -1) {
 				blg_perrorf("can't exec into child\n");
 			}
+		} else {
+			close(pipes[i][STDIN_FILENO]);
 		}
 	}
 
@@ -90,6 +99,10 @@ int main(int argc, char** argv) {
 
 		free(buffer);
 		buffer = NULL;
+	}
+
+	for (size_t i = 0; i != nChildren; ++i) {
+		close(pipes[i][STDOUT_FILENO]);
 	}
 
 	// Wait for all children to exit.

@@ -44,13 +44,6 @@ int main(int argc, char** argv) {
 			blg_perrorf("[child] can't read from stdin\n");
 		}
 
-		// Exit condition.
-		if (*buffer == '\n') {
-			free(buffer);
-			free(modified);
-			exit(EXIT_SUCCESS);
-		}
-
 		size_t newLength;
 		if (!remove_vowels(buffer, nRead, &modified, &newLength)) {
 			free(buffer);

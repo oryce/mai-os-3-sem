@@ -68,6 +68,7 @@ void blg_perrorf(const char* fmt, ...) {
 	vsnprintf(msg, sizeof(msg), fmt, args);
 
 	va_end(args);
+
 	write(STDERR_FILENO, msg, strlen(msg));
 	exit(EXIT_FAILURE);
 }

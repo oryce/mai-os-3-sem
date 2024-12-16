@@ -86,7 +86,7 @@ class posix_streambuf : public std::streambuf {
 			}
 
 			std::streamsize read = std::min(n, space);
-			std::copy(s, s + read, gptr());
+			std::copy(gptr(), gptr() + read, s);
 			gbump(static_cast<int>(read));
 
 			s += read;

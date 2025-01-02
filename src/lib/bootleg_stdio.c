@@ -72,3 +72,15 @@ void blg_perrorf(const char* fmt, ...) {
 	write(STDERR_FILENO, msg, strlen(msg));
 	exit(EXIT_FAILURE);
 }
+
+void blg_printf(const char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+
+	char msg[256];
+	vsnprintf(msg, sizeof(msg), fmt, args);
+
+	va_end(args);
+
+	write(STDOUT_FILENO, msg, strlen(msg));
+}
